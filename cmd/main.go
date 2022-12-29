@@ -7,6 +7,8 @@ import (
 	"github.com/MegalLink/design-patterns/bridge"
 	"github.com/MegalLink/design-patterns/builder"
 	"github.com/MegalLink/design-patterns/composite"
+	"github.com/MegalLink/design-patterns/decorator"
+	"github.com/MegalLink/design-patterns/facade"
 	"github.com/MegalLink/design-patterns/factory"
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/prototype"
@@ -26,6 +28,8 @@ func main() {
 	adapterPatternTest()
 	bridgePatternTest()
 	compositePatternTest(fLogger)
+	decoratorPatternTest(fLogger)
+	facadePatternTest(fLogger)
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -170,4 +174,36 @@ func compositePatternTest(logger logger.IFastLogger) {
 	composite.Connect(neuron1, layer1)
 	composite.Connect(layer2, neuron1)
 	composite.Connect(layer1, layer2)
+}
+
+func decoratorPatternTest(logger logger.IFastLogger) {
+	// multiple aggregation example
+	dragon := decorator.Dragon{}
+	dragon.SetAge(10)
+	dragon.Fly()
+	dragon.Crawl()
+
+	// decorator example
+	// basic structure
+	circle := decorator.Circle{Radius: 2}
+	circle.Resize(10) // we can resize this circle
+	logger.Info("decoratorPatternTest | circle", circle.Render())
+
+	// decorate with color
+	redCircle := decorator.ColoredShape{Shape: &circle, Color: "Red"}
+	//redCircle.Resize(10) we have lost resize in decorator :(
+	logger.Info("decoratorPatternTest | circle", redCircle.Render())
+	// we can decorate the redColor with transparency with this pattern
+	redCircleTransparent := decorator.TransparentShape{Shape: &redCircle, Transparency: 0.5}
+	logger.Info("decoratorPatternTest | circle", redCircleTransparent.Render())
+	// be carefull to decorate other structs with same field names like we saw in dragon example
+}
+
+func facadePatternTest(logger logger.IFastLogger) {
+	// in facade we implement an abstraction from a complex system , and we give this abstraction to user so he can use this simple
+	// give simple API to something complicated that contains lots of components
+	// expose internal funcitons trhough facade
+	console := facade.NewConsole()
+	caracter := console.GetCharacterAt(1)
+	logger.Info("facadePatternTest", caracter)
 }
