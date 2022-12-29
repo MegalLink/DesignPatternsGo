@@ -6,6 +6,7 @@ import (
 	"github.com/MegalLink/design-patterns/adapter"
 	"github.com/MegalLink/design-patterns/bridge"
 	"github.com/MegalLink/design-patterns/builder"
+	"github.com/MegalLink/design-patterns/composite"
 	"github.com/MegalLink/design-patterns/factory"
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/prototype"
@@ -23,7 +24,8 @@ func main() {
 	prototypePatternTest(fLogger)
 	singletonPatternTest(fLogger)
 	adapterPatternTest()
-	bridgePatternTest(fLogger)
+	bridgePatternTest()
+	compositePatternTest(fLogger)
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -128,7 +130,7 @@ func adapterPatternTest() {
 	fmt.Print(adapter.DrawPoints(rasterRectangle))
 }
 
-func bridgePatternTest(logger logger.IFastLogger) {
+func bridgePatternTest() {
 	raster := bridge.RasterRenderer{}
 	vector := bridge.VectorRenderer{}
 	// the trick in this patter is implement bridge interface to send as a param
@@ -140,4 +142,32 @@ func bridgePatternTest(logger logger.IFastLogger) {
 	circle2.Draw()
 	circle2.Resize(2)
 	circle2.Draw()
+}
+
+func compositePatternTest(logger logger.IFastLogger) {
+
+	// graphic example , a graphic object can contain childs of same type
+	drawing := composite.GraphicObject{Name: "My Drawing", Color: ""}
+	drawing.Children = append(drawing.Children, *composite.NewCircle("Red"))
+	drawing.Children = append(drawing.Children, *composite.NewSquare("Blue"))
+
+	group := composite.GraphicObject{Name: "Group 1", Color: ""}
+	group.Children = append(group.Children, *composite.NewCircle("Yellow"))
+	group.Children = append(group.Children, *composite.NewSquare("Yellow"))
+	drawing.Children = append(drawing.Children, group)
+	logger.Info("compositePatternTest", "")
+	fmt.Println(drawing.String())
+
+	// neuron example a Neruon layer can contain Neurons, and Neurons can connect to other neurons
+	neuron1, neuron2 := &composite.Neuron{}, &composite.Neuron{}
+	layer1, layer2 := composite.NewNeuronLayer(3), composite.NewNeuronLayer(4)
+
+	// now we want to just connect layer an neurons with just one function so composite pattern makes the trick
+	// note: this works because NeuronLayers have Neurons
+	// objects can use other objects via composition, some composend and singular objects need similar/identical behaviors
+	// this pattern let us threat both types of objects uniformly
+	composite.Connect(neuron1, neuron2)
+	composite.Connect(neuron1, layer1)
+	composite.Connect(layer2, neuron1)
+	composite.Connect(layer1, layer2)
 }
