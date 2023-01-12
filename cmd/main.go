@@ -13,6 +13,7 @@ import (
 	"github.com/MegalLink/design-patterns/flyweight"
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/prototype"
+	"github.com/MegalLink/design-patterns/proxy"
 	"github.com/MegalLink/design-patterns/singleton"
 )
 
@@ -32,6 +33,7 @@ func main() {
 	decoratorPatternTest(fLogger)
 	facadePatternTest(fLogger)
 	flyweightPatternTest(fLogger)
+	proxyPatterTest()
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -224,4 +226,21 @@ func flyweightPatternTest(logger logger.IFastLogger) {
 	bft.Range(10, 14).Mask = true
 
 	logger.Info("flyweightPatternTest capitalize better formated text", bft.String())
+}
+
+func proxyPatterTest() {
+	// protected Proxy
+	driver := proxy.NewCarProxy(&proxy.Driver{Age: 12})
+	driver.Drive()
+
+	fmt.Println("PROXY VIRTUAL EXAMPLE PROBLEM")
+	// we we call NewBitMap we call to load image even if we are not drawing the image
+	bmp := proxy.NewBitMap("demo1.png")
+	proxy.DrawImage(bmp)
+	proxy.DrawImage(bmp)
+	// virtual proxy loads image lazyly on call of Draw, so we dont need to do de process of load the image unless is necessary
+	fmt.Println("PROXY VIRTUAL SOLUTION")
+	bmpLazy := proxy.NewLazyBitmap("demo.jpg")
+	proxy.DrawImage(bmpLazy)
+	proxy.DrawImage(bmpLazy)
 }
