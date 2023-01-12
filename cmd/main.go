@@ -10,6 +10,7 @@ import (
 	"github.com/MegalLink/design-patterns/decorator"
 	"github.com/MegalLink/design-patterns/facade"
 	"github.com/MegalLink/design-patterns/factory"
+	"github.com/MegalLink/design-patterns/flyweight"
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/prototype"
 	"github.com/MegalLink/design-patterns/singleton"
@@ -30,6 +31,7 @@ func main() {
 	compositePatternTest(fLogger)
 	decoratorPatternTest(fLogger)
 	facadePatternTest(fLogger)
+	flyweightPatternTest(fLogger)
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -206,4 +208,20 @@ func facadePatternTest(logger logger.IFastLogger) {
 	console := facade.NewConsole()
 	caracter := console.GetCharacterAt(1)
 	logger.Info("facadePatternTest", caracter)
+}
+
+func flyweightPatternTest(logger logger.IFastLogger) {
+	// text format example
+	text := "This is a brave new world"
+	result := flyweight.NewFormattedText(text)
+	logger.Info("flyweightPatternTest", result)
+	result.Capitalize(10, 15)
+	logger.Info("flyweightPatternTest capitalize", result.String())
+
+	// better formated text with flyweight patter to avoid using to much memory
+	bft := flyweight.NewBetterFormattedText(text)
+	bft.Range(16, 19).Capitalize = true
+	bft.Range(10, 14).Mask = true
+
+	logger.Info("flyweightPatternTest capitalize better formated text", bft.String())
 }
