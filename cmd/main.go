@@ -14,6 +14,7 @@ import (
 	"github.com/MegalLink/design-patterns/flyweight"
 	"github.com/MegalLink/design-patterns/iterator"
 	"github.com/MegalLink/design-patterns/logger"
+	"github.com/MegalLink/design-patterns/mediator"
 	"github.com/MegalLink/design-patterns/prototype"
 	"github.com/MegalLink/design-patterns/proxy"
 	"github.com/MegalLink/design-patterns/singleton"
@@ -38,6 +39,7 @@ func main() {
 	proxyPatterTest()
 	commandPatternTest(fLogger)
 	iteratorPatterTest(fLogger)
+	mediatorPatternTest()
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -289,4 +291,22 @@ func iteratorPatterTest(logger logger.IFastLogger) {
 	for i := t.InOrder(); i.MoveNext(); {
 		logger.Info("current value", i.Current.Value)
 	}
+}
+
+func mediatorPatternTest() {
+	chatRoom := mediator.ChatRoom{}
+	john := mediator.NewPerson("John")
+	jane := mediator.NewPerson("Jane")
+
+	chatRoom.JoinRoom(john)
+	chatRoom.JoinRoom(jane)
+
+	john.SendChatRoomMessage("hi room")
+	john.SendChatRoomMessage("oh, hey jhon")
+
+	simon := mediator.NewPerson("Simon")
+	chatRoom.JoinRoom(simon)
+	simon.SendChatRoomMessage("hi everyone!")
+
+	jane.PrivateMessage("Simon", "Glad you could join us")
 }
