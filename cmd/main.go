@@ -6,6 +6,7 @@ import (
 	"github.com/MegalLink/design-patterns/adapter"
 	"github.com/MegalLink/design-patterns/bridge"
 	"github.com/MegalLink/design-patterns/builder"
+	"github.com/MegalLink/design-patterns/command"
 	"github.com/MegalLink/design-patterns/composite"
 	"github.com/MegalLink/design-patterns/decorator"
 	"github.com/MegalLink/design-patterns/facade"
@@ -34,6 +35,7 @@ func main() {
 	facadePatternTest(fLogger)
 	flyweightPatternTest(fLogger)
 	proxyPatterTest()
+	commandPatternTest(fLogger)
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -243,4 +245,26 @@ func proxyPatterTest() {
 	bmpLazy := proxy.NewLazyBitmap("demo.jpg")
 	proxy.DrawImage(bmpLazy)
 	proxy.DrawImage(bmpLazy)
+}
+
+func commandPatternTest(logger logger.IFastLogger) {
+	myAccount := command.BankAccount{}
+	cmd := command.NewBankAccountCommand(&myAccount, command.Deposit, 100)
+	cmd.Call()
+	cmd2 := command.NewBankAccountCommand(&myAccount, command.Withdraw, 50)
+	cmd2.Call()
+	logger.Info("commandPatternTest bankAccount", myAccount.GetBalance())
+	// transfer from one bank account to other
+
+	from := command.NewBankAccount(200)
+	to := command.NewBankAccount(100)
+	logger.Info("commandPatternTest transfer from to", fmt.Sprintf("From actual:%d to actual: %d", from.GetBalance(), to.GetBalance()))
+	validCommand := command.NewMoneyTransferCommand(from, to, 50)
+	validCommand.Call()
+	logger.Info("commandPatternTest valid transfer from to", fmt.Sprintf("From result:%d to result: %d", from.GetBalance(), to.GetBalance()))
+	validCommand.Undo()
+	logger.Info("commandPatternTest valid transfer undo from to", fmt.Sprintf("From result:%d to result: %d", from.GetBalance(), to.GetBalance()))
+	invalidCommand := command.NewMoneyTransferCommand(from, to, 600)
+	invalidCommand.Call()
+	logger.Info("commandPatternTest invalid transfer from to", fmt.Sprintf("From result:%d to result: %d", from.GetBalance(), to.GetBalance()))
 }
