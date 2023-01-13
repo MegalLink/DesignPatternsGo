@@ -12,6 +12,7 @@ import (
 	"github.com/MegalLink/design-patterns/facade"
 	"github.com/MegalLink/design-patterns/factory"
 	"github.com/MegalLink/design-patterns/flyweight"
+	"github.com/MegalLink/design-patterns/iterator"
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/prototype"
 	"github.com/MegalLink/design-patterns/proxy"
@@ -36,6 +37,7 @@ func main() {
 	flyweightPatternTest(fLogger)
 	proxyPatterTest()
 	commandPatternTest(fLogger)
+	iteratorPatterTest(fLogger)
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -267,4 +269,24 @@ func commandPatternTest(logger logger.IFastLogger) {
 	invalidCommand := command.NewMoneyTransferCommand(from, to, 600)
 	invalidCommand.Call()
 	logger.Info("commandPatternTest invalid transfer from to", fmt.Sprintf("From result:%d to result: %d", from.GetBalance(), to.GetBalance()))
+}
+
+func iteratorPatterTest(logger logger.IFastLogger) {
+	root := iterator.NewNode(
+		1, iterator.NewTerminalNode(2),
+		iterator.NewTerminalNode(3),
+	)
+	it := iterator.NewInOrderIterator(root)
+
+	logger.Info("iteratorPatterTest", root)
+	for it.MoveNext() {
+		logger.Info("current value", it.Current.Value)
+	}
+	// Iterator is not idiomatic in go but we can build it
+
+	logger.Info("iteratorPatterTest tree implementation", root)
+	t := iterator.NewBinaryTree(root)
+	for i := t.InOrder(); i.MoveNext(); {
+		logger.Info("current value", i.Current.Value)
+	}
 }
