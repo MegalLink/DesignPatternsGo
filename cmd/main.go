@@ -15,6 +15,7 @@ import (
 	"github.com/MegalLink/design-patterns/iterator"
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/mediator"
+	"github.com/MegalLink/design-patterns/memento"
 	"github.com/MegalLink/design-patterns/prototype"
 	"github.com/MegalLink/design-patterns/proxy"
 	"github.com/MegalLink/design-patterns/singleton"
@@ -40,6 +41,7 @@ func main() {
 	commandPatternTest(fLogger)
 	iteratorPatterTest(fLogger)
 	mediatorPatternTest()
+	mementoPatternTest(fLogger)
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -309,4 +311,15 @@ func mediatorPatternTest() {
 	simon.SendChatRoomMessage("hi everyone!")
 
 	jane.PrivateMessage("Simon", "Glad you could join us")
+}
+
+func mementoPatternTest(logger logger.IFastLogger) {
+	ba := memento.NewBankAccount(100)
+	ba.Deposit(50)
+	ba.Deposit(25)
+	logger.Info("mementoPatternTest | bank account", ba.String())
+	ba.Undo()
+	ba.Undo()
+	ba.Redo()
+	logger.Info("mementoPatternTest | bank account restored", ba.String())
 }
