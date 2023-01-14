@@ -16,6 +16,7 @@ import (
 	"github.com/MegalLink/design-patterns/logger"
 	"github.com/MegalLink/design-patterns/mediator"
 	"github.com/MegalLink/design-patterns/memento"
+	"github.com/MegalLink/design-patterns/observer"
 	"github.com/MegalLink/design-patterns/prototype"
 	"github.com/MegalLink/design-patterns/proxy"
 	"github.com/MegalLink/design-patterns/singleton"
@@ -42,6 +43,7 @@ func main() {
 	iteratorPatterTest(fLogger)
 	mediatorPatternTest()
 	mementoPatternTest(fLogger)
+	observerPatterTest()
 }
 
 func builderPatternTest(logger logger.IFastLogger) {
@@ -322,4 +324,11 @@ func mementoPatternTest(logger logger.IFastLogger) {
 	ba.Undo()
 	ba.Redo()
 	logger.Info("mementoPatternTest | bank account restored", ba.String())
+}
+
+func observerPatterTest() {
+	p := observer.NewPerson("Boris")
+	ds := &observer.DoctorService{}
+	p.Subscribe(ds)
+	p.CatchACold()
 }
